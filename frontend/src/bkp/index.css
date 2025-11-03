@@ -1,0 +1,302 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* estilos globais para inputs, selects, textareas e labels */
+@layer base {
+  /* estilo padrão (tema claro) */
+  input, textarea, select, .form-control {
+    @apply w-full border rounded p-2 bg-white text-gray-900;
+  }
+
+  label, .label-form {
+    @apply block text-xs font-medium mb-2 text-gray-900;
+  }
+
+  /* overrides quando .dark estiver presente no root (documentElement) */
+  .dark input, .dark textarea, .dark select, .dark .form-control {
+    @apply bg-gray-800 text-white;
+  }
+
+  .dark label, .dark .label-form {
+    @apply text-gray-200;
+  }
+
+  /* opções (nem todos os navegadores respeitam, mas tentamos) */
+  select option, .form-control option {
+    @apply bg-white text-gray-900;
+  }
+  .dark select option, .dark .form-control option {
+    @apply bg-gray-800 text-white;
+  }
+}
+/* estilos globais para botões */
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700;
+  }
+  .btn-secondary {
+    @apply px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700;
+  }
+  .btn-danger {
+    @apply px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700;
+  }
+}
+/* estilos globais para tabelas */
+@layer components {
+  table {
+    @apply w-full border-collapse;
+  }
+  th, td {
+    @apply border p-2 text-left;
+  }
+  th {
+    @apply bg-gray-200;
+  }
+  .dark th {
+    @apply bg-gray-700;
+  }
+  tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  .dark tr:nth-child(even) {
+    @apply bg-gray-800;
+  }
+} 
+/* estilos globais para modais */
+@layer components {
+  .modal {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center;
+  }
+  .modal-content {
+    @apply bg-white p-4 rounded shadow-lg w-full max-w-lg;
+  }
+  .dark .modal-content {
+    @apply bg-gray-800 text-white;
+  }
+}
+/* estilos globais para paginação */
+@layer components {
+  .pagination {
+    @apply flex space-x-2 justify-center my-4;
+  }
+  .pagination button {
+    @apply px-3 py-1 rounded bg-gray-200 hover:bg-gray-300;
+  }
+  .dark .pagination button {
+    @apply bg-gray-700 hover:bg-gray-600;
+  }
+  .pagination button.active {
+    @apply bg-blue-600 text-white;
+  }
+  .dark .pagination button.active {
+    @apply bg-blue-500;
+  }
+}
+/* estilos globais para mensagens de erro */
+@layer components {
+  .error-message {  
+    @apply text-red-600 text-sm mt-1;
+  }
+  .dark .error-message {
+    @apply text-red-400;
+  }
+}
+/* estilos globais para mensagens de sucesso */
+@layer components {
+  .success-message {                    
+    @apply text-green-600 text-sm mt-1;
+  }
+  .dark .success-message {
+    @apply text-green-400;
+  }
+}
+/* estilos globais para mensagens de aviso */
+@layer components {
+  .warning-message {                    
+    @apply text-yellow-600 text-sm mt-1;                        
+    }   
+  .dark .warning-message {
+    @apply text-yellow-400;
+    }
+}
+/* estilos globais para tooltips */
+@layer components {
+  .tooltip {
+    @apply relative group;
+  }
+  .tooltip .tooltip-text {
+    @apply absolute bottom-full mb-2 w-max max-w-xs bg-gray-900 text-white text-xs rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity;
+  }
+  .dark .tooltip .tooltip-text {
+    @apply bg-gray-700;
+  }
+}
+/* estilos globais para inputs com ícones */
+@layer components {
+  .input-icon {
+    @apply relative;
+  }
+  .input-icon input, .input-icon textarea, .input-icon select {
+    @apply pl-10; /* espaço para o ícone */
+  }
+  .input-icon .icon {
+    @apply absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400;
+  }
+  .dark .input-icon .icon {
+    @apply text-gray-300;
+  }
+}
+/* estilos globais para componentes de carregamento (loading spinners) */
+@layer components {
+  .spinner {
+    @apply border-4 border-t-4 border-gray-200 border-t-blue-600 rounded-full w-6 h-6 animate-spin;
+  }
+  .dark .spinner {
+    @apply border-gray-700 border-t-blue-400;
+  }
+}
+/* estilos globais para barras de progresso */
+@layer components {
+  .progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-4;
+  }
+  .dark .progress-bar {                   
+    @apply bg-gray-700;                        
+  }
+    .progress-bar-fill {
+        @apply bg-blue-600 h-4 rounded-full transition-all duration-300;
+    }
+    .dark .progress-bar-fill {
+        @apply bg-blue-500;
+    }
+}
+/* estilos globais para cards */
+@layer components {
+  .card {
+    @apply bg-white shadow rounded p-4;
+  }
+  .dark .card {
+    @apply bg-gray-800 text-white;
+  }
+}
+/* estilos globais para badges */
+@layer components {
+  .badge {
+    @apply inline-block px-2 py-1 rounded-full bg-gray-200 text-xs font-medium;
+  }
+  .dark .badge {
+    @apply bg-gray-700 text-white;
+  }
+  .badge-primary {
+    @apply bg-blue-600 text-white;
+  }
+  .badge-secondary {
+    @apply bg-gray-600 text-white;
+  }
+  .badge-success {
+    @apply bg-green-600 text-white;
+  }
+  .badge-danger {
+    @apply bg-red-600 text-white;
+  }
+  .badge-warning {
+    @apply bg-yellow-600 text-white;
+  }
+}
+/* estilos globais para toolbars */
+@layer components {
+  .toolbar {                
+    @apply flex space-x-2 mb-4;                        
+  }
+    .toolbar button {
+        @apply px-3 py-1 rounded bg-gray-200 hover:bg-gray-300;
+    }
+    .dark .toolbar button {
+        @apply bg-gray-700 hover:bg-gray-600;
+    }
+    .toolbar button.active {
+        @apply bg-blue-600 text-white;
+    }
+    .dark .toolbar button.active {
+        @apply bg-blue-500;
+    }
+}
+/* estilos globais para inputs desabilitados */
+@layer components {
+  input:disabled, textarea:disabled, select:disabled, .form-control:disabled {
+    @apply bg-gray-100 text-gray-400 cursor-not-allowed;
+  }
+  .dark input:disabled, .dark textarea:disabled, .dark select:disabled, .dark .form-control:disabled {
+    @apply bg-gray-700 text-gray-500;
+  }
+}
+/* estilos globais para inputs com erro */
+@layer components {
+  input.error, textarea.error, select.error, .form-control.error {
+    @apply border-red-600;
+  }
+  .dark input.error, .dark textarea.error, .dark select.error, .dark .form-control.error {
+    @apply border-red-400;
+  }
+}
+/* estilos globais para tabelas com cabeçalho fixo */
+@layer components {
+  .table-fixed-header {
+    @apply block max-h-96 overflow-y-auto;
+  }
+  .table-fixed-header table {
+    @apply w-full border-collapse;
+  }
+  .table-fixed-header th, .table-fixed-header td {
+    @apply border p-2 text-left;
+  }
+  .table-fixed-header th {
+    @apply bg-gray-200 sticky top-0;
+  }
+  .dark .table-fixed-header th {
+    @apply bg-gray-700;
+  }
+  .table-fixed-header tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+  .dark .table-fixed-header tr:nth-child(even) {
+    @apply bg-gray-800;
+  }
+}
+/* estilos globais para paginação do Material-UI */
+@layer components {
+  .MuiTablePagination-root {
+    @apply bg-white;
+  }
+  .dark .MuiTablePagination-root {
+    @apply bg-gray-800 text-white;
+  }
+  .MuiTablePagination-actions button {
+    @apply bg-gray-200 hover:bg-gray-300;
+  }
+  .dark .MuiTablePagination-actions button {
+    @apply bg-gray-700 hover:bg-gray-600;
+  }
+  .MuiTablePagination-displayedRows {
+    @apply text-gray-700;
+  }
+  .dark .MuiTablePagination-displayedRows {
+    @apply text-gray-300;
+  }
+  .MuiTablePagination-select {
+    @apply bg-gray-200;
+  }
+  .dark .MuiTablePagination-select {
+    @apply bg-gray-700 text-white;
+  } 
+  @media screen {
+    .MuiTablePagination-root {
+        @apply w-full;
+    } 
+      
+
+  }
+
+
+}
