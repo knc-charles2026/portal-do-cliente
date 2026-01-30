@@ -1,15 +1,31 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import create_tables
-from app.routers import oportunidades, home  # importa os módulos de rotas
+from app.routers import oportunidades, home
 
 # --- Criação da aplicação FastAPI ---
-app = FastAPI(title="API Controle de Oportunidades")
+#app = FastAPI(
+#    title="API Controle de Oportunidades",
+#    version="0.1.0",
+#    root_path="/portal-do-cliente",
+#    docs_url="/api/docs",
+#    redoc_url="/api/redoc",
+#    openapi_url="/api/openapi.json"
+#)
+app = FastAPI(
+    title="API Controle de Oportunidades",
+    version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
-# --- Configuração de CORS (permite acesso do frontend React/Tailwind) ---
+# --- Configuração de CORS ---
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://69.6.222.200",
+    "https://knc.eco.br",
 ]
 
 app.add_middleware(
@@ -20,16 +36,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Registro das rotas ---
-app.include_router(oportunidades.router)
-app.include_router(home.router)  # integra a rota da Kyra
+# --- Registro das rotas (SEM duplicação) ---
+app.include_router(home.router, prefix="/api")
+#app.include_router(oportunidades.router, prefix="/api")
+app.include_router(oportunidades.router, prefix="/api/oportunidades")
 
-# --- Criação automática das tabelas no banco ---
+# --- Criação automática das tabelas ---
 @app.on_event("startup")
 def startup_event():
     create_tables()
 
-# --- Endpoint raiz para teste ---
+# --- Endpoint raiz ---
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "API rodando com CORS ativo!"}
+    return {
+        "status": "ok",
+        "message": "API rodando corretamente via /portal-do-cliente"
+    }

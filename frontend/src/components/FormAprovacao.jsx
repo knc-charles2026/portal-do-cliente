@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../services/api";
 import {
   Box,
   Typography,
@@ -50,10 +50,11 @@ export default function FormAprovacao({ open, onClose, rowData, fetchOportunidad
       });
 
       // Busca histórico do registro
-      axios
-        .get(`http://localhost:8000/oportunidades/${rowData.id}/historico/`)
-        .then((res) => setHistorico(res.data))
-        .catch((err) => console.error("Erro ao buscar histórico:", err));
+		//api.get(`/oportunidades/${rowData.id}/historico/`)
+		api.get(`/oportunidades/${rowData.id}/historico`)
+		   .then((res) => setHistorico(res.data))
+		   .catch((err) => console.error("Erro ao buscar histórico:", err));
+
     }
   }, [rowData]);
 
@@ -62,20 +63,46 @@ export default function FormAprovacao({ open, onClose, rowData, fetchOportunidad
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSalvar = async () => {
-    try {
-      await axios.put(`http://localhost:8000/oportunidades/${formData.id}/`, formData);
-      setSnackbar({ open: true, message: "Registro atualizado com sucesso!", severity: "success" });
+const handleAprovar = async () => {
+  if (!formData.status) {
+    setSnackbar({ open: true, message: "Selecione o status antes de aprovar", severity: "warning" });
+    return;
+  }
 
-      setTimeout(() => {
-        fetchOportunidades();
-        onClose();
-      }, 1500);
-    } catch (error) {
-      console.error(error);
-      setSnackbar({ open: true, message: "Erro ao atualizar registro", severity: "error" });
-    }
-  };
+  try {
+    // Chamada para endpoint de aprovação
+    const response = await api.put(
+      `/oportunidades/${formData.id}/aprovar`,
+      { status: formData.status, observacao_knc: formData.observacao_knc }
+    );
+
+    setSnackbar({ open: true, message: "Oportunidade aprovada com sucesso!", severity: "success" });
+
+    setTimeout(() => {
+      fetchOportunidades();
+      onClose();
+    }, 1500);
+
+  } catch (error) {
+    console.error(`Erro na aprovação API/oportunidades/${formData.id}:`, error);
+    setSnackbar({ open: true, message: "Falha ao aprovar oportunidade", severity: "error" });
+  }
+};
+
+  //const handleSalvar = async () => {
+  //  try {
+  //    await api.put(`/oportunidades/${formData.id}/`, formData);
+  //    setSnackbar({ open: true, message: "Registro atualizado com sucesso!", severity: "success" });
+  //
+  //    setTimeout(() => {
+  //      fetchOportunidades();
+  //      onClose();
+//	      }, 1500);
+  //  } catch (error) {
+  //    console.error(error);
+  //    setSnackbar({ open: true, message: "Erro ao atualizar registro", severity: "error" });
+  //  }
+  //};
 
   return (
     <Card
@@ -171,7 +198,7 @@ export default function FormAprovacao({ open, onClose, rowData, fetchOportunidad
             name="status"
             value={formData.status}
             onChange={handleChange}
-            minHeight={86}
+            minHeight={180}
             minWidth={400}
             autoFocus
             variant="outlined"
@@ -182,11 +209,12 @@ export default function FormAprovacao({ open, onClose, rowData, fetchOportunidad
               "&:hover": { backgroundColor: "rgba(21, 79, 214, 0.12)" }  
             }}
           >
-            <MenuItem value="">Selecione</MenuItem>
+            <MenuItem value="" disabled>Selecione</MenuItem>
             <MenuItem value="Aprovado">Aprovado</MenuItem>
             <MenuItem value="Aguardando">Aguardando</MenuItem>
             <MenuItem value="Negado">Negado</MenuItem>
             <MenuItem value="Pendente">Pendente</MenuItem>
+			<MenuItem value="Renovado">Renovado</MenuItem>
           </TextField>
         </Box>
 
@@ -205,14 +233,16 @@ export default function FormAprovacao({ open, onClose, rowData, fetchOportunidad
         </Box>
 
         {/* Botões */}
-        <Box display="flex" justifyContent="flex-start" gap={2} mb={3}>
-          <Button variant="contained" color="primary" onClick={handleSalvar}>
-            Salvar
-          </Button>
-          <Button variant="contained" color="error" onClick={onClose}>
-            Cancelar
-          </Button>
-        </Box>
+		
+		<Box display="flex" justifyContent="flex-start" gap={2} mb={3}>
+			<Button variant="contained" color="primary" onClick={handleAprovar}>
+			Aprovar
+			</Button>
+			<Button variant="contained" color="error" onClick={onClose}>
+			Cancelar
+			</Button>
+		</Box>
+		
 
         {/* Histórico */}
         {historico.length > 0 && (

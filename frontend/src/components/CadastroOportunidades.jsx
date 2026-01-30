@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
+import api from "../services/api";
 import logoMarca from "../assets/knc-logo.png";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { ptBR } from "@mui/x-data-grid/locales";
@@ -70,10 +70,11 @@ const handleCloseDeleteModal = () => {
   setDeleteId(null);
 };
 
+
   // Confirma exclusão
   const handleConfirmDelete = async () => {
   try {
-    await axios.delete(`http://localhost:8000/oportunidades/${deleteId}`);
+    await api.delete(`/portal-do-cliente/api/oportunidades/${deleteId}`);
     setSnackbarMessage("Registro excluído com sucesso!");
     setSnackbarOpen(true);
     fetchOportunidades(); // Atualiza grid
@@ -95,7 +96,7 @@ const handleCloseDeleteModal = () => {
   const handleDelete = async (id) => {
   if (window.confirm("Deseja realmente excluir esta oportunidade?")) {
     try {
-      await axios.delete(`http://localhost:8000/oportunidades/${id}`);
+      await api.delete(`/portal-do-cliente/api/oportunidades/${id}`);
       fetchData(); // recarrega lista após delete
     } catch (err) {
       console.error(err);
@@ -109,15 +110,21 @@ const handleCloseDeleteModal = () => {
   const alternarMenu = () => setMenuAberto(!menuAberto);
 
   const fetchOportunidades = async () => {
-    try {
-      const response = await axios.get('http://localhost:8000/oportunidades/');
-      setOportunidades(response.data);
-      setErroOportunidades(null);
-    } catch (error) {
-      setErroOportunidades("Não foi possível carregar os registros de oportunidades.");
-      console.error(error);
-   }
-  };
+  try {
+    const response = await api.get('/oportunidades/');
+      console.log('STATUS:', response.status);
+      console.log('DATA:', response.data);
+      console.log('TIPO:', Array.isArray(response.data));
+	
+    setOportunidades(response.data);
+    setErroOportunidades(null);
+  } catch (error) {
+    setErroOportunidades(
+      "Não foi possível carregar os registros de oportunidades."
+    );
+    console.error(error);
+  }
+};
 
    const handleCancelar = () => {
       setModo("list"); // ou o estado que controla se exibe o form ou o grid
@@ -424,8 +431,8 @@ useEffect(() => {
           onClick={async (e) => {
             e.stopPropagation();
             try {
-              await axios.post(
-                `http://localhost:8000/oportunidades/${params.row.id}/renovar`
+              await api.post(
+                `/oportunidades/${params.row.id}/renovar`
               );
               fetchOportunidades();
               setSnackbarMessage("Registro renovado com sucesso!");
@@ -446,22 +453,46 @@ useEffect(() => {
 
 
 
- const rows = useMemo(
-    () =>
-      oportunidades.map((o, index) => {
-        const dataHora = dayjs(o.data_inclusao, "YYYY-MM-DD");
-        const vencimento = dataHora.add(90, "day").format("YYYY-MM-DD"); // 90 dias para Vencimento contados da data de inclusão
-        const vencimento_sla = dataHora.add(3, "day").format("YYYY-MM-DD"); // 03 dias para Vencimento do SLA  contados da data de inclusão
-        return {
-          id: o.id ?? index,
-          ...o,
-          vencimento,
-          vencimento_sla,
-        };
-      }),
-    [oportunidades]
+// const rows = useMemo(
+//    () =>
+//      oportunidades.map((o, index) => {
+//        const dataHora = dayjs(o.data_inclusao, "YYYY-MM-DD");
+//        const vencimento = dataHora.add(90, "day").format("YYYY-MM-DD"); // 90 dias para Vencimento contados da data de inclusão
+//        const vencimento_sla = dataHora.add(3, "day").format("YYYY-MM-DD"); // 03 dias para Vencimento do SLA  contados da data de inclusão
+//        return {
+//          id: o.id ?? index,
+//          ...o,
+//          vencimento,
+//          vencimento_sla,
+//        };
+//      }),
+//    [oportunidades]
+//
+//    );
 
-    );
+const rows = useMemo(() => {
+  if (!Array.isArray(oportunidades)) return [];
+
+  return oportunidades.map((o, index) => {
+    const dataHora = dayjs(o.data_inclusao, "YYYY-MM-DD");
+
+    const vencimento = dataHora
+      .add(90, "day")
+      .format("YYYY-MM-DD");
+
+    const vencimento_sla = dataHora
+      .add(3, "day")
+      .format("YYYY-MM-DD");
+
+    return {
+      id: o.id ?? index,
+      ...o,
+      vencimento,
+      vencimento_sla,
+    };
+  });
+}, [oportunidades]);
+
 
   const handleSnackbarClose = () => setSnackbarOpen(false);
   
@@ -648,9 +679,9 @@ useEffect(() => {
         }}
         onSalvar={async () => {
           try {
-            if (modoForm === "create") await axios.post("http://localhost:8000/oportunidades/", formData);
-            if (modoForm === "update") await axios.put(`http://localhost:8000/oportunidades/${registroSelecionado?.id}/`, formData);
-            if (modoForm === "delete") await axios.delete(`http://localhost:8000/oportunidades/${registroSelecionado?.id}/`);
+            if (modoForm === "create") await api.post("/oportunidades/", formData);
+            if (modoForm === "update") await api.put(`/oportunidades/${registroSelecionado?.id}`, formData);
+            if (modoForm === "delete") await api.delete(`/oportunidades/${registroSelecionado?.id}/`);
             setModo("list");
             setModoForm(null);
             setRegistroSelecionado(null);
@@ -716,37 +747,37 @@ useEffect(() => {
           <Typography sx={{margin:2}} variant="contained" fontWeight="bold" > Registro de Oportunidades</Typography>
         </Box>
 
-            <DataGrid
-              rows={rows}
-              rowHeight={rowHeight} 
-              columns={columns}
-              showToolbar
-              getRowId={(row) => row.id} // 🔑 garante que cada linha tenha ID
-              pageSizeOptions={[15, 25, 50, 100]}
-              initialState={{
-              pagination: { paginationModel: { pageSize: 15 } },
-              }}
-              checkboxSelection
-              disableRowSelectionOnClick
-              localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-             // pinnedColumns={{ right: ["acoes"] }} // <- coluna fixa à direita Só funciona na Grid Pro / Premium
-              getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? "even-row" : "odd-row"
-              }
-              
-              sx={{
-                width: "100%",
-                height: "640px",     // altura fixa para permitir scroll interno
-                borderRadius: 2,
-                borderTop: "none",   // cola no header
-                overflow: "hiden",   // scroll aparece só dentro do grid
-                "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "none", // cola no rodapé
-                },
-                boxShadow: "0 4px 8px rgba(251, 218, 228, 0.48)",
-                ...dataGridSx(temaEscuro), 
-              }}
-            />
+		  <DataGrid
+		  rows={rows}
+		  columns={columns}
+		  rowHeight={rowHeight}
+		  showToolbar
+		  getRowId={(row) => row.id}
+		  pageSizeOptions={[15, 25, 50, 100]}
+		  initialState={{
+			  pagination: { paginationModel: { pageSize: 15 },
+			  },
+		  }}
+		  checkboxSelection
+		  disableRowSelectionOnClick
+		  localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+		  getRowClassName={(params) =>
+			  params.indexRelativeToCurrentPage % 2 === 0 ? "even-row" : "odd-row"
+		  }
+		  sx={{
+			  width: "100%",
+			  height: "640px",      // altura fixa para scroll interno
+			  borderRadius: 2,
+			  borderTop: "none",
+			  overflow: "hidden",  // ✔️ corrigido
+			  "& .MuiDataGrid-columnHeaders": {
+			  borderBottom: "none",
+			  },
+			  boxShadow: "0 4px 8px rgba(251, 218, 228, 0.48)",
+			  ...dataGridSx(temaEscuro),
+		  }}
+		  />
+
           </div>
           )}
 
