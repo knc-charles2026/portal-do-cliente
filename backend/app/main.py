@@ -53,3 +53,15 @@ def read_root():
         "status": "ok",
         "message": "API rodando corretamente via /portal-do-cliente"
     }
+
+# --- Importação dos routers adicionais para Login---
+
+from app.routers import oportunidades, home, login, auth  # adicione login e auth aqui
+
+# --- Registro das rotas (SEM duplicação) ---
+app.include_router(home.router, prefix="/api")
+app.include_router(oportunidades.router, prefix="/api/oportunidades")
+
+# --- Adicione o router de login ---
+app.include_router(login.router, prefix="/login")   # rota POST /login/
+app.include_router(auth.router, prefix="/auth")     # rotas protegidas futuras

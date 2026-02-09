@@ -1,3 +1,5 @@
+from urllib.parse import quote_plus
+
 import os
 from dotenv import load_dotenv
 
@@ -11,7 +13,9 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 DB_USER = os.getenv("DB_USER", "painel")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_PASSWORD_RAW = os.getenv("DB_PASSWORD", "")
+DB_PASSWORD = quote_plus(DB_PASSWORD_RAW)
+
 DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_NAME = os.getenv("DB_NAME", "knc")
 

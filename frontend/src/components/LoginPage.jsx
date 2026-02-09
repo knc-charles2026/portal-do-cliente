@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Snackbar, Alert } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 import knc_background from "../assets/knc_background.png";
-import logo_knc from "../assets/knc-logo2.png"; 
+import logo_knc from "../assets/knc-logo.png";
 
 export default function LoginPage({ setAutenticado }) {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  
 
   const handleLogin = (e) => {
     e.preventDefault();
+
     if (usuario === "admin" && senha === "5366") {
       localStorage.setItem("usuario", usuario);
       setAutenticado(true);
@@ -26,86 +34,157 @@ export default function LoginPage({ setAutenticado }) {
 
   return (
     <Box
-      className="flex flex-col items-center justify-center h-screen relative"
       sx={{
+        minHeight: "100vh",
+        display: "flex",
         backgroundImage: `url(${knc_background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        position: "relative",
       }}
     >
-      {/* Logo no canto superior esquerdo */}
-      <Box className="absolute top-4 left-4">
-        <img src={logo_knc} alt="KNC Logo" className="h-12 w-auto" />
-      </Box>
+      {/* OVERLAY */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(135deg, rgba(11,27,43,0.92), rgba(20,44,76,0.88))",
+          zIndex: 0,
+        }}
+      />
 
-      {/* Card de login */}
-      <Box className="bg-white shadow-xl rounded-xl p-10 w-80 z-10"
-           sx={{ transition: "all 0.3s ease-in-out" }}>
-        <Typography 
-          variant="h5" 
-          className="text-center font-bold text-gray-700"
-          sx={{ mb: 6 }} // mais espaço entre título e inputs
+      {/* CONTAINER PRINCIPAL */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          width: "100%",
+          zIndex: 1,
+        }}
+      >
+        {/* BRANDING */}
+        <Box
+          sx={{
+            flex: 1,
+            px: { xs: 3, sm: 6, md: 8 },
+            py: { xs: 6, md: 0 },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: { xs: "center", md: "flex-start" },
+            textAlign: { xs: "center", md: "left" },
+            color: "#fff",
+          }}
         >
-          Acesso ao Sistema
-        </Typography>
+          <Box
+            component="img"
+            src={logo_knc}
+            alt="KNC Logo"
+            sx={{
+              width: { xs: 140, sm: 160, md: 180 },
+              mb: 5,
+            }}
+          />
 
-        <form onSubmit={handleLogin}>
-          <TextField
-            label="Usuário"
-            variant="outlined"
-            fullWidth
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
+          <Typography
+            variant="h4"
             sx={{
-              mb: 4,
-              transition: "all 0.3s ease",
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1976d2",
-                  boxShadow: "0 0 5px rgba(25, 118, 210, 0.3)",
-                },
-              },
-            }}
-          />
-          <TextField
-            label="Senha"
-            type="password"
-            variant="outlined"
-            fullWidth
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            sx={{
-              mb: 2.5, // menos espaço entre input e botão
-              transition: "all 0.3s ease",
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": {
-                  borderColor: "#1976d2",
-                  boxShadow: "0 0 5px rgba(25, 118, 210, 0.3)",
-                },
-              },
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            type="submit"
-            className="rounded-lg"
-            sx={{
-              py: 1.8,
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-2px)",
-                boxShadow: "0 4px 20px rgba(25, 118, 210, 0.4)",
-              },
+              fontWeight: 700,
+              fontSize: { xs: "1.6rem", sm: "1.9rem", md: "2.2rem" },
+              mb: 3.5,
             }}
           >
-            Entrar
-          </Button>
-        </form>
+            Portal do Cliente
+          </Typography>
+
+          <Typography
+            sx={{
+              maxWidth: 620,
+              opacity: 0.9,
+              fontSize: { xs: "0.95rem", sm: "1rem" },
+            }}
+          >
+            Gerencie oportunidades com o RO New, inclua, pesquise, filtre, altere e exclua registros, tenha acesso aos dados inseridos e faça o acompanhamento de cada registro com base no status.
+            Tudo isso em um ambiente moderno, fechado e seguro.
+          </Typography>
+        </Box>
+
+        {/* LOGIN */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            px: 2,
+            pb: { xs: 6, md: 0 },
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: 420,
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(8px)",
+              borderRadius: 4,
+              p: { xs: 4, sm: 5 },
+              boxShadow: "0 20px 50px rgba(0,0,0,0.35)",
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              textAlign="center"
+              mb={4}
+              color="#0b1b2b"
+            >
+              Acesso ao Sistema
+            </Typography>
+
+            <form onSubmit={handleLogin}>
+              <TextField
+                label="Usuário"
+                fullWidth
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                sx={{ mb: 3 }}
+              />
+
+              <TextField
+                label="Senha"
+                type="password"
+                fullWidth
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                sx={{ mb: 4 }}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  py: 1.6,
+                  fontWeight: 600,
+                  textTransform: "none",
+                  background:
+                    "linear-gradient(135deg, #1976d2, #125ea8)",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(135deg, #125ea8, #0d4a85)",
+                    boxShadow: "0 8px 24px rgba(25,118,210,0.4)",
+                  },
+                }}
+              >
+                Entrar no Portal
+              </Button>
+            </form>
+          </Box>
+        </Box>
       </Box>
 
-      {/* Snackbar de erro */}
+      {/* ERRO */}
       <Snackbar
         open={open}
         autoHideDuration={4000}

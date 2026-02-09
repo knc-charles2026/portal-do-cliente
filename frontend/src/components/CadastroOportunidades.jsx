@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import api from "../services/api";
 import logoMarca from "../assets/knc-logo.png";
+import logoMarca2 from "../assets/ro-logo.png";
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { ptBR } from "@mui/x-data-grid/locales";
 import { Sun, Moon, ListIcon } from "lucide-react";
@@ -504,11 +505,11 @@ const rows = useMemo(() => {
         variant="permanent"
         open={menuAberto}
         sx={{ 
-          width: menuAberto ? 310 : 60,
+          width: menuAberto ? 310 : 50,
           flexShrink: 0,
           zIndex: (theme) => theme.zIndex.drawer + 1, // AppBar atrás do Drawer
           "& .MuiDrawer-paper": {
-            width: menuAberto ? 310 : 60,
+            width: menuAberto ? 310 : 50,
             boxSizing: "border-box",
             color: "#fff",
             transition: "width 0.2s",
@@ -523,7 +524,11 @@ const rows = useMemo(() => {
             right: 0,
             backgroundColor: "#fff",
             zIndex: 3,
-            boxShadow: "-4px 0 6px rgba(0,0,0,0.05)",
+            //boxShadow: "-4px 0 6px rgba(0,0,0,0.05)",
+                  /* 🔥 REMOÇÃO TOTAL DA LINHA */
+            borderRight: "0 !important",
+            boxShadow: "none",
+            outline: "none",
           },
             "& .MuiDataGrid-cell": {
             borderRight: "1px solid #f0f0f0",
@@ -533,13 +538,15 @@ const rows = useMemo(() => {
         }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: menuAberto ? "space-between" : "center", alignItems: "center", px: 1 }}>
-          {menuAberto && <img src={logoMarca} alt="Logo" className="h-8" />}
+          {menuAberto && <img src={logoMarca} alt="Logo" className="h-12" />}
           <IconButton onClick={alternarMenu} sx={{ color: "#fff" }}>
             <Tooltip title="Menu" placement="right"><MenuIcon /></Tooltip>
           </IconButton>
+
         </Toolbar>
-        <Divider />
-        <List>
+        <Divider sx={{borderColor: "rgba(34,211,238,0.35)",px: 0.03, my: 1, mx:-1}}/>
+        <List sx={{ "& .MuiListItem-root": { py: -0.301 },
+        "& .MuiListItem-root:hover": { backgroundColor: "#22374ce3" } }}>
           <ListItem button onClick={() => navigate("/home")}>
             <ListItemIcon sx={{ color: "#fff" }}>
               <Tooltip title="Home" placement="right"><HomeIcon /></Tooltip>
@@ -563,7 +570,7 @@ const rows = useMemo(() => {
             <ListItemIcon sx={{ color: "#fff" }}>
               <Tooltip title="+ Criar Novo" placement="right"><AddIcon /></Tooltip>
             </ListItemIcon>
-            {menuAberto && <ListItemText primary="Adicionar Registro" />}
+            {menuAberto && <ListItemText primary="Adicionar Novo Registro" />}
           </ListItem>
           <ListItem button onClick={() => { 
               setFormData({}); 
@@ -579,8 +586,10 @@ const rows = useMemo(() => {
             {menuAberto && <ListItemText primary="Aprovação" />}
           </ListItem>
         </List>
-        <Divider />
-        <List>
+        <Divider sx={{borderColor: "rgba(34,211,238,0.35)", mx:-1, my: 0.01, px: 0.0, pb: 1, mt: 32, 
+    }}/>
+        <List sx={{ "& .MuiListItem-root": { py: 1 },
+        "& .MuiListItem-root:hover": { backgroundColor: "#22374ce3" }, color: "#fff" }}>
 {/*           <ListItem button onClick={() => setUsuario(null)}>
             <ListItemIcon sx={{ color: "#fff" }}>
               <Tooltip title="Sair" placement="right"><LogoutIcon /></Tooltip>
@@ -589,7 +598,9 @@ const rows = useMemo(() => {
           </ListItem> */}
           <ListItem button onClick={onLogout}>
           <ListItemIcon sx={{ color: "#fff" }}>
-            <LogoutIcon />
+              <Tooltip title="Sair" placement="right"></Tooltip>
+                            <Tooltip title="Sair" placement="right"><LogoutIcon /></Tooltip>
+            
           </ListItemIcon>
           <ListItemText primary="Sair" />
         </ListItem>
@@ -598,24 +609,62 @@ const rows = useMemo(() => {
 
       {/* Conteúdo */}
   
-      <Box sx={{ flexGrow: 1, mt: "48px" }}>
-        {/* Navbar */}
-        <AppBar position="fixed" elevation={0} sx={{ backgroundColor: "#1e293b", borderTop: "none", zIndex: (theme) => theme.zIndex.drawer}}>
-          <Toolbar sx={{ minHeight: 48, display: "flex", justifyContent: "space-between", px: 2 }}>
-            <img src={logoMarca} alt="Logo" className="h-8" style={{ marginLeft: "48px" }} />
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <IconButton onClick={alternarTema} color="inherit">
-                {temaEscuro ? <Sun size={20} /> : <Moon size={20} />}
-              </IconButton>
-              <span className="text-sm">Bem-vindo! {usuario ? `${usuario}` : ""}</span> 
-              
-            </Box>
-          </Toolbar>
-        </AppBar>
+      <Box sx={{ flexGrow: 1, mt: "65px" }}>
+{/* Navbar */}
+<AppBar
+  position="fixed"
+  elevation={1}
+  sx={{
+    backgroundColor: "#1e293b",
+    borderTop: "none",
+    zIndex: (theme) => theme.zIndex.drawer + 1, // Garante que o AppBar fique acima do Drawer
+    width: `calc(100% - ${menuAberto ? 310 : 50}px)`,
+    ml: `${menuAberto ? 310 : 50}px`,
+    transition: "all 0.35s ease",
+  }}
+>
+  <Toolbar
+    sx={{
+      minHeight: 48,
+      display: "flex",
+      alignItems: "center",
+      px: 2,
+    }}
+  >
+    {/* Logo */}
+    <Box
+      component="img"
+      src={logoMarca2}
+      alt="Logo"
+      sx={{
+        height: 48,
+        mr: 1,
+        transition: "margin 0.43s ease",
+      }}
+    />
+
+    {/* Título */}
+    <Typography
+      variant="h6"
+      fontWeight="bold"
+      noWrap
+      sx={{ flexGrow: 1 }}
+    >
+      Registro de portunidades
+    </Typography>
+
+    {/* Usuário */}
+    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <span className="text-sm">
+        Bem-vindo! {usuario ? usuario : ""}
+      </span>
+    </Box>
+  </Toolbar>
+</AppBar>
 
         {/* Título e botão */}
         <Box sx={{ mx: "auto", mt: "4", mb:"4", display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, pb: 0}}>
-          <Typography sx={{margin:0}}variant="h5" fontWeight="bold">Portal do Cliente</Typography>
+          <Typography sx={{margin:0}}variant="h5"/* sx={{ mt: "30px" }}*/ ml={3} fontWeight="bold"> Visualizar Registro de Oportunidades</Typography>
 {/*           {modo === "list" && (   
           <Button
             variant="contained"
@@ -628,7 +677,7 @@ const rows = useMemo(() => {
           )} */}
 
 {/* Botão Configurações */}
-<Tooltip title="Configurações" placement="left">
+<Tooltip title="Configurações do DataGrid" placement="left">
   <IconButton
     color="inherit"
     size="small"
@@ -743,8 +792,8 @@ const rows = useMemo(() => {
               }}
             >
          
-        <Box className={" text xs row-span-3" } sx={{ display: 'flex', width: 300, mx: "right" }}>
-          <Typography sx={{margin:2}} variant="contained" fontWeight="bold" > Registro de Oportunidades</Typography>
+        <Box className={" text xs row-span-3" } sx={{ display: 'flex', width: 600, mx: "right" }}>
+          <Typography sx={{margin:2}} variant="contained" fontWeight="bold" > </Typography>
         </Box>
 
 		  <DataGrid

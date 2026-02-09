@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Divider,
   Box,
@@ -23,10 +23,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 
 import backgroundImage from "../assets/knc_background-2.png";
-import logoMarca from "../assets/knc-logo3.png";
+import logoMarca from "../assets/knc-logo.png";
 import banner1 from "../assets/banner1.png";
 import banner2 from "../assets/banner2.png";
 import banner3 from "../assets/banner3.png";
+
+import LedLines from "../components/LedLines";
 
 export default function Home({ onLogout }) {
   const navigate = useNavigate();
@@ -34,66 +36,89 @@ export default function Home({ onLogout }) {
   const usuario = localStorage.getItem("usuario");
 
   const banners = [
+    { type: "image", imagem: banner1 },
     {
-      imagem: banner1,
+      type: "content",
       titulo: "Registro de Oportunidades",
       descricao:
-        "Inclua, exclua, altere e faça o acompanhamento de todos os registros de oportunidades em um só lugar, com filtros dinâmicos, controle de alterações dependendo do status, controle de SLA, controle de validade e opção de renovação de um registro já vencido, onde é gerada uma cópia com todas as informações contidas no RO de origem, mantendo o vínculo entre eles para histórico.",
-      botao: "Ver Registros de Oportunidades",
+        "Insira registros, altere, faça pesquisas das oportunidades inseridas, monitore a validade com base em alertas visuais e faça a renovação, se necessário.",
+      botao: "Acessar Oportunidades",
       rota: "/registros",
     },
+    { type: "image", imagem: banner2 },
     {
-      imagem: banner2,
-      titulo: "Controle de Acessos por Usuários",
+      type: "content",
+      titulo: "Controle de Acessos",
       descricao:
-        "Tenha visibilidade completa dos dados, históricos e interações.",
-      botao: "Ver Cadastro de Usuários",
+        "Permissões por usuário, segurança e visibilidade controlada.",
+      botao: "Gerenciar Usuários",
       rota: "/usuarios",
     },
+    { type: "image", imagem: banner3, cover: true },
     {
-      imagem: banner3,
-      titulo: "Relatórios Estratégicos",
+      type: "content",
+      titulo: "Distribuidor Oficial Urovo",
       descricao:
-        "Decisões mais rápidas e seguras com dados claros e organizados.",
-      botao: "Visualizar Relatórios",
+        "Coletores, impressoras, acessórios e suporte especializado.",
+      botao: "Ver Produtos",
       rota: "/relatorios",
     },
   ];
 
   const [bannerAtual, setBannerAtual] = useState(0);
+  const touchStartX = useRef(null);
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const tempo = banners[bannerAtual].type === "content" ? 9000 : 7000;
+
+    const timer = setTimeout(() => {
       setBannerAtual((prev) => (prev + 1) % banners.length);
-    }, 6000);
+    }, tempo);
 
-    return () => clearInterval(timer);
-  }, [banners.length]);
+    return () => clearTimeout(timer);
+  }, [bannerAtual, banners]);
 
-  const alternarMenu = () => setMenuAberto(!menuAberto);
   const toggleDrawer = () => setMenuAberto(!menuAberto);
 
-  const proximoBanner = () => {
+  const proximoBanner = () =>
     setBannerAtual((prev) => (prev + 1) % banners.length);
-  };
 
-  const bannerAnterior = () => {
+  const bannerAnterior = () =>
     setBannerAtual((prev) =>
       prev === 0 ? banners.length - 1 : prev - 1
     );
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
   };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStartX.current) return;
+
+    const delta =
+      touchStartX.current - e.changedTouches[0].clientX;
+
+    if (delta > 50) proximoBanner();
+    if (delta < -50) bannerAnterior();
+
+    touchStartX.current = null;
+  };
+
+  const banner = banners[bannerAtual];
 
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "100%",
+        minHeight: "100vh",
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      <LedLines />
+
       {/* NAVBAR */}
       <AppBar
         position="fixed"
@@ -109,11 +134,18 @@ export default function Home({ onLogout }) {
             </Tooltip>
           </IconButton>
 
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            sx={{ flexGrow: 1, ml: 2 }}
+            fontWeight="bold"
+          >
             Portal do Cliente
           </Typography>
 
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
             Bem-vindo, {usuario || ""}
           </Typography>
         </Toolbar>
@@ -125,19 +157,29 @@ export default function Home({ onLogout }) {
         onClose={toggleDrawer}
         sx={{
           "& .MuiDrawer-paper": {
-            background: "linear-gradient(to right, #21479e, #1e293b)",
+            //background: "linear-gradient(to right, #21479e, #1e293b)",
+            background: "linear-gradient(to right, #21479eff, #1e293b)",            
             color: "#fff",
-            width: 300,
+            width: 380,
           },
         }}
       >
-        <Toolbar>
-          <img src={logoMarca} alt="Logo" height={40} />
+        <Toolbar sx={{ color: "#fff", mt: 9, justifyContent: "center" }}>
+          <Box
+            component="img"
+            src={logoMarca}
+            alt="Logo"
+            sx={{
+              height: menuAberto ? 50 : 18,
+              transition: "height 0.3s ease",
+            }}
+          />
         </Toolbar>
 
-        <Divider />
+        <Divider sx={{borderColor: "rgba(34,211,238,0.35)", my: 1, px: 0.013, pb: 1, mt: 0.01, }}/> 
 
-        <List>
+        <List sx={{ "& .MuiListItem-root": { py: 1 },
+        "& .MuiListItem-root:hover": { backgroundColor: "#22374ce3" } }}>
           <ListItem button onClick={() => navigate("/home")}>
             <ListItemIcon sx={{ color: "#fff" }}>
               <HomeIcon />
@@ -149,166 +191,150 @@ export default function Home({ onLogout }) {
             <ListItemIcon sx={{ color: "#fff" }}>
               <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Oportunidades" />
+            <ListItemText primary="Registro de Oportunidades" />
           </ListItem>
-
+    <Box sx={{ mt: "auto", pb:1 }}>
+        <Divider sx={{borderColor: "rgba(34,211,238,0.35)", my: 1, px: 0.03, pb: 1, mt: 41, }}/> 
+    </Box>
           <ListItem button onClick={onLogout}>
-            <ListItemIcon sx={{ color: "#fff" }}>
+            <ListItemIcon sx={{ "& .MuiListItem-root": { py: 1 },
+        "& .MuiListItem-root:hover": { backgroundColor: "#22374ce3" }, color: "#fff" }}>
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Sair" />
           </ListItem>
         </List>
+
       </Drawer>
 
       {/* CONTEÚDO */}
       <Box
         sx={{
-          mt: 8,
-          height: "calc(100vh - 64px)",
+          pt: 12,
+          px: 2,
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
         }}
       >
-{/* CAROUSEL */}
-<Box
-  sx={{
-    width: "85%",
-    maxWidth: 1100,
-    height: 400,
-    borderRadius: 4,
-    overflow: "hidden",
-    position: "relative",
-    boxShadow: 10,
-  }}
->
-  {/* IMAGEM */}
-  <Box
-    component="img"
-    src={banners[bannerAtual].imagem}
-    alt="Banner"
-    sx={{
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    }}
-  />
+        <Box
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          sx={{
+            width: "70%",                // largura menor
+            maxWidth: 700,               // limite máximo
+            height: { xs: 160, sm: 200, md: 240 }, // altura menor
+            maxHeight: 240,
+            borderRadius: 4,
+            overflow: "hidden",
+            position: "relative",
+            boxShadow: 10,
+            backgroundColor: bannerAtual === 0 ? "#0b1b2b" : "#000", // azul escuro só no banner1
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mx: "auto",                  // centraliza horizontalmente
+          }}
+        >
+          {/* IMAGE */}
+          {banner.type === "image" && (
+            <Box
+              component="img"
+              src={banner.imagem}
+              alt="Banner"
+              sx={{
+                width: "100%",
+                height: "100%",
+                //objectFit: "contain", // mantém proporção
+                objectFit: banner.cover ? "cover" : "contain",
+                objectPosition: "center",
+              }}
+            />
+          )}
 
-  {/* OVERLAY */}
-  <Box
-    sx={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(to right, rgba(0,0,0,.75), rgba(0,0,0,.3))",
-      display: "flex",
-      alignItems: "center",
-      px: { xs: 3, md: 6 },
-    }}
-  >
-    <Box sx={{ maxWidth: 520, color: "#fff" }}>
-      <Typography variant="h4" fontWeight={700} mb={2}>
-        {banners[bannerAtual].titulo}
-      </Typography>
+          {/* CONTENT */}
+          {banner.type === "content" && (
+            <Box
+              sx={{
+                width: "100%",
+                height: "100%",
+                px: { xs: 2, sm: 4, md: 6 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #0b1b2b, #142c4c)",
+                color: "#fff",
+              }}
+            >
+              <Typography
+                variant="h4"
+                sx={{
+                  fontSize: { xs: "1.3rem", sm: "1.6rem", md: "1.9rem" },
+                  fontWeight: 700,
+                  mb: 2,
+                }}
+              >
+                {banner.titulo}
+              </Typography>
 
-      <Typography mb={4} sx={{ opacity: 0.9 }}>
-        {banners[bannerAtual].descricao}
-      </Typography>
+              <Typography
+                sx={{
+                  maxWidth: 480,
+                  mb: 2,
+                  opacity: 0.9,
+                  fontSize: { xs: "0.9rem", sm: "0.95rem", md: "1rem" },
+                }}
+              >
+                {banner.descricao}
+              </Typography>
 
-      {/* BOTÃO PRINCIPAL */}
-      <Button
-        variant="contained"
-        size="large"
-        onClick={() => navigate(banners[bannerAtual].rota)}
-        sx={{
-          px: 4,
-          py: 1.5,
-          borderRadius: 2,
-          textTransform: "none",
-          fontWeight: 600,
-          boxShadow: 4,
-        }}
-      >
-        {banners[bannerAtual].botao}
-      </Button>
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  maxWidth: 280,
+                  py: 1.2,
+                  fontWeight: 600,
+                  textTransform: "none",
+                }}
+                onClick={() => navigate(banner.rota)}
+              >
+                {banner.botao}
+              </Button>
+            </Box>
+          )}
+
+          {/* INDICADORES */}
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 10,
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              gap: 1,
+            }}
+          >
+            {banners.map((_, i) => (
+              <Box
+                key={i}
+                onClick={() => setBannerAtual(i)}
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  backgroundColor:
+                    i === bannerAtual ? "#fff" : "rgba(255,255,255,.4)",
+                  cursor: "pointer",
+                }}
+              />
+            ))}
+          </Box>
+        </Box>
+      </Box>
     </Box>
-  </Box>
-
-  {/* SETA ESQUERDA */}
-  <IconButton
-    onClick={bannerAnterior}
-    aria-label="Banner anterior"
-    sx={{
-      position: "absolute",
-      top: "50%",
-      left: 16,
-      transform: "translateY(-50%)",
-      backgroundColor: "rgba(0,0,0,.55)",
-      color: "#fff",
-      zIndex: 2,
-      width: 28,
-      height: 28,
-      "&:hover": {
-        backgroundColor: "rgba(251, 241, 241, 0.75)",
-      },
-    }}
-  >
-    ❮
-  </IconButton>
-
-  {/* SETA DIREITA */}
-  <IconButton
-    onClick={proximoBanner}
-    aria-label="Próximo banner"
-    sx={{
-      position: "absolute",
-      top: "50%",
-      right: 16,
-      transform: "translateY(-50%)",
-      backgroundColor: "rgba(0,0,0,.55)",
-      color: "#fff",
-      width: 28,
-      height: 28,
-      "&:hover": {
-        backgroundColor: "rgba(251, 241, 241, 0.75)",
-      },
-    }}
-  >
-    ❯
-  </IconButton>
-
-  {/* INDICADORES */}
-  <Box
-    sx={{
-      position: "absolute",
-      bottom: 20,
-      left: "50%",
-      transform: "translateX(-50%)",
-      display: "flex",
-      gap: 1.5,
-    }}
-  >
-    {banners.map((_, index) => (
-      <Box
-        key={index}
-        onClick={() => setBannerAtual(index)}
-        sx={{
-          width: 12,
-          height: 12,
-          borderRadius: "50%",
-          cursor: "pointer",
-          transition: "all .3s",
-          backgroundColor:
-            bannerAtual === index ? "#1976d2" : "rgba(255,255,255,.6)",
-          transform:
-            bannerAtual === index ? "scale(1.2)" : "scale(1)",
-        }}
-      />
-    ))}
-			</Box>
-			</Box>
-			</Box>
-		</Box>
-	  );
-	}
+  );
+}
