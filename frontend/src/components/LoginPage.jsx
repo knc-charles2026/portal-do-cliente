@@ -103,9 +103,29 @@ export default function LoginPage({ setAutenticado }) {
               maxWidth: 620,
               opacity: 0.9,
               fontSize: { xs: "0.95rem", sm: "1rem" },
+              mb: 3.5,
+              textAlign: "justify",
+              textJustify: "inter-word",
             }}
           >
-            Gerencie oportunidades com o RO New, inclua, pesquise, filtre, altere e exclua registros, tenha acesso aos dados inseridos e faça o acompanhamento de cada registro com base no status.
+            Registre oportunidades com o RO New (Novo Registro de Oportunidades da KNC), com ele você poderá incluir, pesquisar, filtrar, alterar e excluir registros. 
+            Você terá acesso aos seus dados inseridos e poderá fazer o acompanhamento de cada registro com base no campo status.
+
+            
+          </Typography>
+
+                    <Typography
+            sx={{
+              maxWidth: 620,
+              opacity: 0.9,
+              fontSize: { xs: "0.95rem", sm: "1rem" },
+              mb: 3.5,
+              textAlign: "justify",
+              textJustify: "inter-word",
+            }}
+          >
+            
+            
             Tudo isso em um ambiente moderno, fechado e seguro.
           </Typography>
         </Box>

@@ -57,7 +57,7 @@ export default function Home({ onLogout }) {
     { type: "image", imagem: banner3, cover: true },
     {
       type: "content",
-      titulo: "Distribuidor Oficial Urovo",
+      titulo: "Distribuidor Oficial Urovo Brasil",
       descricao:
         "Coletores, impressoras, acessórios e suporte especializado.",
       botao: "Ver Produtos",

@@ -32,6 +32,12 @@ const headerStyles = (temaEscuro) => ({
   '& .MuiDataGrid-columnHeaderDraggableContainer': {
     backgroundColor: temaEscuro ? "#fbfcffff" : '#fbfcffff',
   },
+
+  '& .MuiDataGrid-toolbarQuickFilter': {
+    backgroundColor: temaEscuro ? "#fcfdfe" : '#f9fafb',
+    color: temaEscuro ? "#fff" : '#11113bff',
+  },
+
 });
 
 // Footer
@@ -71,6 +77,11 @@ const toolbarStyles = (temaEscuro) => ({
   '& .MuiDataGrid-toolbarContainer .MuiButton-contained': {
     color: temaEscuro ? '#ffffff' : '#ffffff',
     backgroundColor: temaEscuro ? '#334155' : '#3b82f6',
+  },
+    '& .MuiDataGrid-toolbarQuickFilterControl': {
+    color: temaEscuro ? '#ffffff' : '#ffffff',
+    backgroundColor: temaEscuro ? '#ffffff' : '#fcfcfc',
+    '&:hover': {  backgroundColor: temaEscuro ? '#ffffff' : '#98adf0' },
   },
 });
 

@@ -505,14 +505,14 @@ const rows = useMemo(() => {
         variant="permanent"
         open={menuAberto}
         sx={{ 
-          width: menuAberto ? 310 : 50,
+          width: menuAberto ? 310 : 60,
           flexShrink: 0,
           zIndex: (theme) => theme.zIndex.drawer + 1, // AppBar atrás do Drawer
           "& .MuiDrawer-paper": {
-            width: menuAberto ? 310 : 50,
+            width: menuAberto ? 310 : 60,
             boxSizing: "border-box",
             color: "#fff",
-            transition: "width 0.2s",
+            transition: "width 0.35s ease",
             overflowX: "hidden",
             padding: "5px",
             background: "linear-gradient(to right, #21479eff, #1e293b)",
@@ -590,12 +590,7 @@ const rows = useMemo(() => {
     }}/>
         <List sx={{ "& .MuiListItem-root": { py: 1 },
         "& .MuiListItem-root:hover": { backgroundColor: "#22374ce3" }, color: "#fff" }}>
-{/*           <ListItem button onClick={() => setUsuario(null)}>
-            <ListItemIcon sx={{ color: "#fff" }}>
-              <Tooltip title="Sair" placement="right"><LogoutIcon /></Tooltip>
-            </ListItemIcon>
-            {menuAberto && <ListItemText primary="Sair" />}
-          </ListItem> */}
+
           <ListItem button onClick={onLogout}>
           <ListItemIcon sx={{ color: "#fff" }}>
               <Tooltip title="Sair" placement="right"></Tooltip>
@@ -618,8 +613,8 @@ const rows = useMemo(() => {
     backgroundColor: "#1e293b",
     borderTop: "none",
     zIndex: (theme) => theme.zIndex.drawer + 1, // Garante que o AppBar fique acima do Drawer
-    width: `calc(100% - ${menuAberto ? 310 : 50}px)`,
-    ml: `${menuAberto ? 310 : 50}px`,
+    width: `calc(100% - ${menuAberto ? 310 : 60}px)`,
+    ml: `${menuAberto ? 310 : 60}px`,
     transition: "all 0.35s ease",
   }}
 >
@@ -637,7 +632,7 @@ const rows = useMemo(() => {
       src={logoMarca2}
       alt="Logo"
       sx={{
-        height: 48,
+        height: 41,
         mr: 1,
         transition: "margin 0.43s ease",
       }}
@@ -650,7 +645,7 @@ const rows = useMemo(() => {
       noWrap
       sx={{ flexGrow: 1 }}
     >
-      Registro de portunidades
+      Registro de Oportunidades
     </Typography>
 
     {/* Usuário */}
@@ -663,8 +658,8 @@ const rows = useMemo(() => {
 </AppBar>
 
         {/* Título e botão */}
-        <Box sx={{ mx: "auto", mt: "4", mb:"4", display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, pb: 0}}>
-          <Typography sx={{margin:0}}variant="h5"/* sx={{ mt: "30px" }}*/ ml={3} fontWeight="bold"> Visualizar Registro de Oportunidades</Typography>
+        <Box sx={{ mx: "auto", mt: "10px", ml: "25px", mb:"4", display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, pb: 0}}>
+          <Typography sx={{margin:0}}variant="h6"/* sx={{ mt: "30px" }}*/ ml={6} fontWeight="bold"> Visualizar Registros</Typography>
 {/*           {modo === "list" && (   
           <Button
             variant="contained"
